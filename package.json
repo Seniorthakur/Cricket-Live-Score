@@ -1,0 +1,13 @@
+{
+  "name": "cricket-live-studio",
+  "version": "36.0.0",
+  "private": true,
+  "description": "Cricket Live Studio v36 \u2014 animated broadcast scoreboard overlay (full studio + lower-third) for OBS / live streaming, with live feed, ICC player faces, win predictor and event stingers.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node server.js --self-test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

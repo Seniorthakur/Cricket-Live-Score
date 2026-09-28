@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cricket Live Studio · Control Room</title>
+  <link rel="stylesheet" href="fonts/fonts.css" />
+  <style>
+    :root { --ink:#04060d; --panel:#0c1224; --panel-2:#121a33; --line:rgba(255,255,255,.1); --text:#f5f7fc; --soft:#c5cde0; --muted:#8f9ab5; --volt:#d7ff3a; --red:#ff3d5a;
+      --f-display:'Big Shoulders Display','Arial Narrow',sans-serif; --f-ui:'Archivo','Segoe UI',sans-serif; }
+    * { box-sizing: border-box; margin: 0; }
+    body { min-height: 100vh; background: radial-gradient(1200px 600px at 10% -10%, #1a1440 0%, transparent 60%), radial-gradient(900px 500px at 100% 0%, #0f2c3a 0%, transparent 60%), var(--ink);
+      color: var(--text); font: 500 15px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    .skip { position: absolute; left: -999px; } .skip:focus { left: 16px; top: 16px; background: var(--volt); color: #000; padding: 8px 12px; z-index: 10; }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 28px 28px 60px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 26px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .logo { width: 46px; height: 46px; display: grid; place-items: center; background: var(--volt); color: #0b0f00; clip-path: polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px); }
+    h1 { font: 900 34px/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase; }
+    h1 small { display: block; margin-top: 4px; font: 700 12px/1 var(--f-ui); letter-spacing: .28em; color: var(--muted); }
+    .ver { padding: 6px 10px; border: 1px solid var(--line); font: 800 12px/1 var(--f-ui); letter-spacing: .2em; color: var(--volt); }
+
+    .grid { display: grid; grid-template-columns: 380px 1fr; gap: 22px; align-items: start; }
+    @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--line); padding: 22px; clip-path: polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px); }
+    .card + .card { margin-top: 18px; }
+    h2 { font: 900 20px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    h2::before { content: ''; width: 8px; height: 8px; background: var(--volt); transform: rotate(45deg); }
+    label { display: block; font: 800 12px/1 var(--f-ui); letter-spacing: .2em; color: var(--soft); text-transform: uppercase; margin: 16px 0 8px; }
+    label:first-of-type { margin-top: 0; }
+    .hint { margin-top: 6px; font-size: 13px; color: var(--muted); }
+    input[type=text] { width: 100%; height: 48px; padding: 0 14px; background: #060a16; border: 1px solid var(--line); color: var(--text); font: 700 16px var(--f-ui); letter-spacing: .04em; }
+    input[type=text]:focus-visible, button:focus-visible, a:focus-visible, .seg input:focus-visible + span { outline: 3px solid var(--volt); outline-offset: 2px; }
+    .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .seg label { margin: 0; cursor: pointer; }
+    .seg input { position: absolute; opacity: 0; }
+    .seg span { display: flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 10px; border: 1px solid var(--line); background: #060a16; font: 800 13px/1.1 var(--f-ui); letter-spacing: .12em; color: var(--soft); text-align: center; transition: .2s; }
+    .seg input:checked + span { background: var(--volt); border-color: var(--volt); color: #0b0f00; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 16px; border: 1px solid var(--line); background: #0a1022;
+      color: var(--text); font: 800 13px/1 var(--f-ui); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: transform .15s, background .2s, border-color .2s; touch-action: manipulation; }
+    .btn:hover { border-color: rgba(255,255,255,.3); background: #111a36; }
+    .btn:active { transform: scale(.97); }
+    .btn.primary { background: var(--volt); border-color: var(--volt); color: #0b0f00; }
+    .btn.primary:hover { background: #e6ff7a; }
+    .btn svg { width: 18px; height: 18px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+    .row.three { grid-template-columns: repeat(4, 1fr); }
+    .url { margin-top: 16px; padding: 12px 14px; background: #060a16; border: 1px dashed var(--line); font: 600 13px/1.4 ui-monospace, 'JetBrains Mono', monospace; color: var(--volt); word-break: break-all; }
+    .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 30px); opacity: 0; padding: 12px 18px; background: var(--volt); color: #0b0f00; font: 800 13px var(--f-ui); letter-spacing: .12em; transition: .3s; pointer-events: none; }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    .preview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+    .frame { position: relative; aspect-ratio: 16/9; width: 100%; background: repeating-conic-gradient(#0d1224 0 25%, #0a0f1e 0 50%) 0 0/28px 28px; border: 1px solid var(--line); overflow: hidden; }
+    .frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px 18px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+    kbd { display: inline-block; min-width: 26px; padding: 3px 7px; margin-right: 8px; border: 1px solid var(--line); background: #060a16; color: var(--text); font: 800 12px var(--f-ui); text-align: center; }
+    .stingers { display: flex; flex-wrap: wrap; gap: 8px; }
+    .stingers .btn { flex: 1 1 110px; }
+    .st-four { border-color: #2bd9fe; color: #2bd9fe; } .st-six { border-color: #ffb930; color: #ffb930; } .st-w { border-color: var(--red); color: var(--red); } .st-m { border-color: var(--volt); color: var(--volt); }
+    .demo-only[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#preview">Skip to preview</a>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 5.5c2.2 3.7 2.2 9.3 0 13M16 5.5c-2.2 3.7-2.2 9.3 0 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="1.6 1.8"/></svg></div>
+        <h1>Cricket Live Studio<small>BROADCAST CONTROL ROOM</small></h1>
+      </div>
+      <span class="ver">V36 · 1920×1080</span>
+    </header>
+
+    <div class="grid">
+      <aside>
+        <form class="card" id="cfg" onsubmit="return false">
+          <h2>Match setup</h2>
+          <label for="key">Match key</label>
+          <input id="key" type="text" value="11AI" autocomplete="off" spellcheck="false" />
+          <p class="hint">The key from your live-score feed URL.</p>
+
+          <label for="tz">Display timezone</label>
+          <input id="tz" type="text" placeholder="e.g. Asia/Kathmandu (optional)" autocomplete="off" spellcheck="false" />
+
+          <label>Layout</label>
+          <div class="seg" role="radiogroup" aria-label="Layout">
+            <label><input type="radio" name="layout" value="studio" checked /><span>Full studio</span></label>
+            <label><input type="radio" name="layout" value="bar" /><span>Lower-third bar</span></label>
+          </div>
+
+          <label>Background</label>
+          <div class="seg" role="radiogroup" aria-label="Background">
+            <label><input type="radio" name="bg" value="" checked /><span>Stadium night</span></label>
+            <label><input type="radio" name="bg" value="none" /><span>Transparent</span></label>
+          </div>
+
+          <label>Source</label>
+          <div class="seg" role="radiogroup" aria-label="Data source">
+            <label><input type="radio" name="mode" value="live" checked /><span>Live feed</span></label>
+            <label><input type="radio" name="mode" value="demo" /><span>Demo simulator</span></label>
+          </div>
+
+          <div class="url" id="url" aria-live="polite"></div>
+          <div class="row">
+            <button class="btn primary" type="button" id="copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11"/><path d="M5 15V4h11"/></svg>Copy OBS URL</button>
+            <a class="btn" id="open" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/></svg>Open</a>
+          </div>
+        </form>
+
+        <section class="card demo-only" id="demoCard" aria-label="Demo controls">
+          <h2>Demo scenes</h2>
+          <div class="row three" style="margin-top:0">
+            <button class="btn" type="button" data-scene="live">Live</button>
+            <button class="btn" type="button" data-scene="prematch">Pre</button>
+            <button class="btn" type="button" data-scene="end">Result</button>
+            <button class="btn" type="button" data-scene="trophy">Final</button>
+          </div>
+          <h2 style="margin-top:22px">Stingers</h2>
+          <div class="stingers">
+            <button class="btn st-four" type="button" data-stinger="four">Four</button>
+            <button class="btn st-six" type="button" data-stinger="six">Six</button>
+            <button class="btn st-w" type="button" data-stinger="wicket">Wicket</button>
+            <button class="btn st-m" type="button" data-stinger="milestone">Fifty</button>
+          </div>
+          <div class="row"><button class="btn" type="button" id="nextBall" style="grid-column:1/-1">Bowl next ball →</button></div>
+        </section>
+      </aside>
+
+      <main class="card" id="preview" aria-label="Overlay preview">
+        <div class="preview-head">
+          <h2 style="margin:0">Program preview</h2>
+          <button class="btn" type="button" id="reload">Reload preview</button>
+        </div>
+        <div class="frame"><iframe id="frame" title="Scoreboard overlay preview"></iframe></div>
+        <div class="keys">
+          <span><kbd>L</kbd>Toggle layout (any mode)</span>
+          <span><kbd>1–4</kbd>Live · Pre · Result · Final (demo)</span>
+          <span><kbd>→</kbd>Next simulated ball (demo)</span>
+          <span><kbd>F</kbd><kbd>S</kbd><kbd>W</kbd><kbd>M</kbd>Stingers (demo)</span>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status">Copied to clipboard</div>
+
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const val = n => (document.querySelector(`input[name="${n}"]:checked`) || {}).value || '';
+      function build(absolute) {
+        const p = new URLSearchParams();
+        const demo = val('mode') === 'demo';
+        if (demo) p.set('demo', '1'); else p.set('key', $('key').value.trim() || '11AI');
+        if (val('layout') === 'bar') p.set('layout', 'bar');
+        if (val('bg') === 'none') p.set('bg', 'none');
+        const tz = $('tz').value.trim(); if (tz) p.set('tz', tz);
+        const path = `overlay.html?${p}`;
+        return absolute ? new URL(path, location.href).href : path;
+      }
+      function refresh(reload) {
+        const url = build(true);
+        $('url').textContent = url;
+        $('open').href = url;
+        $('demoCard').setAttribute('aria-disabled', val('mode') === 'demo' ? 'false' : 'true');
+        if (reload || $('frame').dataset.src !== url) { $('frame').dataset.src = url; $('frame').src = build(false); }
+      }
+      document.querySelectorAll('input').forEach(i => i.addEventListener('change', () => refresh()));
+      $('key').addEventListener('keydown', e => { if (e.key === 'Enter') refresh(true); });
+      $('reload').addEventListener('click', () => refresh(true));
+      const send = msg => $('frame').contentWindow?.postMessage(msg, location.protocol === 'file:' ? '*' : location.origin);
+      document.querySelectorAll('[data-scene]').forEach(b => b.addEventListener('click', () => send({ type: 'scene', scene: b.dataset.scene })));
+      document.querySelectorAll('[data-stinger]').forEach(b => b.addEventListener('click', () => send({ type: 'stinger', kind: b.dataset.stinger })));
+      $('nextBall').addEventListener('click', () => send({ type: 'ball' }));
+      $('copy').addEventListener('click', async () => {
+        const url = build(true);
+        try { await navigator.clipboard.writeText(url); } catch { const r = document.createRange(); r.selectNode($('url')); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand('copy'); }
+        const t = $('toast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1800);
+      });
+      if (location.protocol === 'file:') document.querySelector('input[name="mode"][value="demo"]').checked = true;
+      refresh(true);
+    })();
+  </script>
+</body>
+</html>

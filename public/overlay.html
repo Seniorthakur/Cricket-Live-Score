@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cricket Live Studio · Overlay</title>
+  <link rel="stylesheet" href="fonts/fonts.css" />
+  <link rel="stylesheet" href="overlay.css" />
+</head>
+<body class="layout-studio">
+  <!-- Reusable SVG symbols -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-bat" viewBox="0 0 24 24"><path d="M14.5 3.5l6 6-9.8 9.8a2 2 0 0 1-2.8 0l-3.2-3.2a2 2 0 0 1 0-2.8zM6 18l-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 5.5c2.2 3.7 2.2 9.3 0 13M16 5.5c-2.2 3.7-2.2 9.3 0 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="1.6 1.8"/></symbol>
+      <symbol id="i-stumps" viewBox="0 0 24 24"><path d="M6 7v14M12 7v14M18 7v14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4.5 4.5l6 1.2M13.5 5.7l6-1.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-trophy" viewBox="0 0 64 64"><path d="M18 8h28v14a14 14 0 0 1-28 0z" fill="currentColor"/><path d="M18 12H8v4a10 10 0 0 0 10 10M46 12h10v4a10 10 0 0 1-10 10" fill="none" stroke="currentColor" stroke-width="4"/><path d="M28 36h8v8h-8z" fill="currentColor"/><path d="M20 50h24l2 6H18z" fill="currentColor"/><rect x="24" y="44" width="16" height="6" rx="1" fill="currentColor"/></symbol>
+      <symbol id="i-silhouette" viewBox="0 0 200 220"><path d="M100 20c-27 0-44 20-44 48 0 30 18 56 44 56s44-26 44-56c0-28-17-48-44-48z" fill="currentColor"/><path d="M14 220c4-50 36-80 86-80s82 30 86 80z" fill="currentColor"/></symbol>
+    </defs>
+  </svg>
+
+  <div id="viewport" class="viewport">
+    <main id="stage" class="stage is-live" aria-live="polite">
+
+      <!-- ============ BACKGROUND ============ -->
+      <div class="bg" aria-hidden="true">
+        <div class="bg-glow bg-glow--home"></div>
+        <div class="bg-glow bg-glow--away"></div>
+        <div class="bg-glow bg-glow--volt"></div>
+        <div class="bg-pitch"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-noise"></div>
+      </div>
+
+      <!-- ============ STUDIO LAYOUT ============ -->
+      <section class="studio" aria-label="Full studio scoreboard">
+
+        <header class="topbar enter" style="--i:0">
+          <div class="topbar-left">
+            <span class="live-badge" data-live-badge><i></i><b data-bind="liveLabel">LIVE</b></span>
+            <span class="topbar-event" data-bind="eventName">LIVE CRICKET</span>
+          </div>
+          <div class="topbar-mid">
+            <span class="chip-outline" data-bind="format">CRICKET</span>
+            <span class="topbar-sep"></span>
+            <span data-bind="inningsLabel">1ST INNINGS</span>
+          </div>
+          <div class="topbar-right">
+            <span class="topbar-venue"><svg><use href="#i-pin"/></svg><span data-bind="venue">Venue</span></span>
+            <span class="topbar-clock"><svg><use href="#i-clock"/></svg><span data-bind="clock">--:--</span></span>
+          </div>
+        </header>
+
+        <section class="hero enter" style="--i:1">
+          <article class="team team--home">
+            <div class="team-wash"></div>
+            <div class="team-mark" data-mark="home"></div>
+            <div class="team-copy">
+              <span class="team-role" data-bind="homeRole">BATTING</span>
+              <strong class="team-name" data-bind="homeName">TEAM ONE</strong>
+              <span class="team-code" data-bind="homeCode">T1</span>
+            </div>
+          </article>
+
+          <div class="score-core" id="scoreCore">
+            <span class="score-sheen" aria-hidden="true"></span>
+            <!-- live -->
+            <div class="core-state core-live">
+              <span class="core-kicker"><i class="dot"></i><span data-bind="scoreKicker">LIVE SCORE</span></span>
+              <div class="core-score-row">
+                <strong class="core-score roll" data-roll="score">0/0</strong>
+                <div class="core-overs">
+                  <b class="roll" data-roll="overs">0.0</b>
+                  <span data-bind="oversLabel">OVERS</span>
+                </div>
+              </div>
+              <div class="core-status" data-bind="status">Connecting to live feed…</div>
+            </div>
+            <!-- pre-match -->
+            <div class="core-state core-pre">
+              <span class="core-kicker"><svg><use href="#i-clock"/></svg><span data-bind="preKicker">UPCOMING MATCH</span></span>
+              <strong class="core-vs">VS</strong>
+              <div class="core-status" data-bind="preStatus">Match scheduled</div>
+            </div>
+            <!-- ended -->
+            <div class="core-state core-end">
+              <span class="core-kicker"><svg><use href="#i-trophy"/></svg><span data-bind="endKicker">FINAL RESULT</span></span>
+              <div class="core-score-row">
+                <strong class="core-score roll" data-roll="finalScore">0/0</strong>
+                <div class="core-overs"><b data-bind="finalOvers">0.0</b><span>OVERS</span></div>
+              </div>
+              <div class="core-status core-status--result" data-bind="resultText">Match complete</div>
+            </div>
+          </div>
+
+          <article class="team team--away">
+            <div class="team-wash"></div>
+            <div class="team-copy">
+              <span class="team-role" data-bind="awayRole">BOWLING</span>
+              <strong class="team-name" data-bind="awayName">TEAM TWO</strong>
+              <span class="team-code" data-bind="awayCode">T2</span>
+            </div>
+            <div class="team-mark" data-mark="away"></div>
+          </article>
+        </section>
+
+        <section class="mid">
+          <div class="col col--batters">
+            <article class="player panel enter is-striker" style="--i:2" data-card="striker">
+              <div class="player-photo" data-avatar="striker">
+                <svg class="player-fallback"><use href="#i-silhouette"/></svg>
+                <img data-photo="striker" alt="" decoding="async" referrerpolicy="no-referrer" />
+                <span class="player-jersey" data-bind="homeCode">T1</span>
+              </div>
+              <div class="player-body">
+                <div class="player-tag"><svg><use href="#i-bat"/></svg><span>ON STRIKE</span><i class="striker-pulse"></i></div>
+                <strong class="player-name" data-bind="b1Name">Awaiting batter</strong>
+                <div class="player-figure"><b class="roll" data-roll="b1Runs">—</b><span>(<em data-bind="b1Balls">—</em>)</span></div>
+                <div class="player-stats">
+                  <span><small>4s</small><b data-bind="b1Fours">—</b></span>
+                  <span><small>6s</small><b data-bind="b1Sixes">—</b></span>
+                  <span><small>SR</small><b data-bind="b1Sr">—</b></span>
+                </div>
+              </div>
+            </article>
+            <article class="player panel enter" style="--i:3" data-card="nonStriker">
+              <div class="player-photo" data-avatar="nonStriker">
+                <svg class="player-fallback"><use href="#i-silhouette"/></svg>
+                <img data-photo="nonStriker" alt="" decoding="async" referrerpolicy="no-referrer" />
+                <span class="player-jersey" data-bind="homeCode">T1</span>
+              </div>
+              <div class="player-body">
+                <div class="player-tag player-tag--muted"><svg><use href="#i-bat"/></svg><span>NON-STRIKER</span></div>
+                <strong class="player-name" data-bind="b2Name">Awaiting batter</strong>
+                <div class="player-figure"><b class="roll" data-roll="b2Runs">—</b><span>(<em data-bind="b2Balls">—</em>)</span></div>
+                <div class="player-stats">
+                  <span><small>4s</small><b data-bind="b2Fours">—</b></span>
+                  <span><small>6s</small><b data-bind="b2Sixes">—</b></span>
+                  <span><small>SR</small><b data-bind="b2Sr">—</b></span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <section class="delivery panel enter" style="--i:4" id="delivery" data-kind="waiting">
+            <div class="delivery-rays" aria-hidden="true"></div>
+            <div class="delivery-wash" aria-hidden="true"></div>
+            <div class="delivery-fx" id="deliveryFx" aria-hidden="true"></div>
+
+            <!-- live ball -->
+            <div class="delivery-live">
+              <div class="delivery-head">
+                <span class="delivery-label"><svg><use href="#i-ball"/></svg>LATEST BALL</span>
+                <span class="delivery-over" data-bind="lastBallOver">—</span>
+              </div>
+              <div class="delivery-main">
+                <strong class="delivery-value" id="deliveryValue">—</strong>
+                <span class="delivery-unit" data-bind="deliveryUnit">WAITING</span>
+              </div>
+              <p class="delivery-detail" data-bind="deliveryDetail">Ball result appears here</p>
+            </div>
+
+            <!-- pre-match countdown -->
+            <div class="delivery-pre">
+              <div class="countdown-ring" id="countdownRing">
+                <svg viewBox="0 0 200 200" aria-hidden="true">
+                  <circle class="ring-track" cx="100" cy="100" r="88"/>
+                  <circle class="ring-ticks" cx="100" cy="100" r="98"/>
+                  <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="88" pathLength="100"/>
+                </svg>
+                <div class="ring-core">
+                  <small data-bind="countLabel">STARTS IN</small>
+                  <b data-bind="countValue">SOON</b>
+                </div>
+              </div>
+              <div class="pre-info">
+                <span class="pre-kicker" data-bind="preEvent">MATCH DAY</span>
+                <strong class="pre-teams"><span data-bind="homeName">TEAM ONE</span> <em>v</em> <span data-bind="awayName">TEAM TWO</span></strong>
+                <div class="pre-rows">
+                  <div><svg><use href="#i-clock"/></svg><small>FIRST BALL</small><b data-bind="startTime">TBC</b></div>
+                  <div><svg><use href="#i-pin"/></svg><small>VENUE</small><b data-bind="venue">To be announced</b></div>
+                </div>
+                <span class="pre-zone" data-bind="timeZone">LOCAL TIME</span>
+              </div>
+            </div>
+
+            <!-- winner -->
+            <div class="delivery-end">
+              <div class="confetti" aria-hidden="true"></div>
+              <div class="winner-mark-wrap">
+                <span class="winner-halo" aria-hidden="true"></span>
+                <div class="winner-mark" data-mark="winner"></div>
+              </div>
+              <div class="winner-copy">
+                <span class="winner-eyebrow" data-bind="winnerEyebrow">MATCH WINNER</span>
+                <strong class="winner-name" data-bind="winnerName">WINNER</strong>
+                <p class="winner-result" data-bind="resultText">Match complete</p>
+                <span class="winner-trophy"><svg><use href="#i-trophy"/></svg><b data-bind="trophyLabel">CHAMPIONS</b></span>
+              </div>
+            </div>
+          </section>
+
+          <div class="col col--right">
+            <article class="player panel player--bowler enter" style="--i:5" data-card="bowler">
+              <div class="player-photo" data-avatar="bowler">
+                <svg class="player-fallback"><use href="#i-silhouette"/></svg>
+                <img data-photo="bowler" alt="" decoding="async" referrerpolicy="no-referrer" />
+                <span class="player-jersey" data-bind="awayCode">T2</span>
+              </div>
+              <div class="player-body">
+                <div class="player-tag player-tag--bowl"><svg><use href="#i-ball"/></svg><span>BOWLING</span></div>
+                <strong class="player-name" data-bind="bwName">Awaiting bowler</strong>
+                <div class="player-figure"><b class="roll" data-roll="bwFigures">—</b><span>(<em data-bind="bwOvers">—</em>)</span></div>
+                <div class="player-stats">
+                  <span><small>ECON</small><b data-bind="bwEco">—</b></span>
+                  <span><small>MDN</small><b data-bind="bwMaidens">—</b></span>
+                  <span><small>BALLS</small><b data-bind="bwBalls">—</b></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="winprob panel enter" style="--i:6">
+              <div class="winprob-head">
+                <span>WIN PREDICTOR</span>
+                <small data-bind="winMode">LIVE ESTIMATE</small>
+              </div>
+              <div class="winprob-values">
+                <div class="wp-team wp-team--home">
+                  <div class="wp-mark" data-mark="home"></div>
+                  <div><small data-bind="homeCode">T1</small><b class="roll" data-roll="winHome">50%</b></div>
+                </div>
+                <div class="wp-team wp-team--away">
+                  <div><small data-bind="awayCode">T2</small><b class="roll" data-roll="winAway">50%</b></div>
+                  <div class="wp-mark" data-mark="away"></div>
+                </div>
+              </div>
+              <div class="winprob-track"><i class="wp-home" data-meter="winHome"></i><span class="wp-split" id="wpSplit"></span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="metrics enter" style="--i:7">
+          <article class="metric panel" data-metric="crr">
+            <div class="metric-head"><span>CRR</span><small>CURRENT RATE</small></div>
+            <div class="metric-value"><b class="roll" data-roll="crr">0.00</b><em data-bind="crrNote">—</em></div>
+            <div class="meter"><i data-meter="crr"></i></div>
+          </article>
+          <article class="metric panel" data-metric="rrr">
+            <div class="metric-head"><span>RRR</span><small>REQUIRED RATE</small></div>
+            <div class="metric-value"><b class="roll" data-roll="rrr">—</b><em data-bind="rrrNote">—</em></div>
+            <div class="meter meter--hot"><i data-meter="rrr"></i></div>
+          </article>
+          <article class="metric panel" data-metric="partnership">
+            <div class="metric-head"><span>PARTNERSHIP</span><small data-bind="pshipNote">CURRENT STAND</small></div>
+            <div class="metric-value"><b class="roll" data-roll="pshipRuns">0</b><em data-bind="pshipBalls">0 BALLS</em></div>
+            <div class="meter meter--cool"><i data-meter="pship"></i></div>
+          </article>
+          <article class="metric panel" data-metric="target">
+            <div class="metric-head"><span data-bind="targetTitle">TARGET</span><small data-bind="targetNote">NOT CHASING</small></div>
+            <div class="metric-value"><b class="roll" data-roll="target">—</b><em data-bind="targetContext">—</em></div>
+            <div class="meter meter--volt"><i data-meter="target"></i></div>
+          </article>
+          <article class="metric panel" data-metric="progress">
+            <div class="metric-head"><span data-bind="progressTitle">INNINGS</span><small data-bind="progressNote">PROGRESS</small></div>
+            <div class="metric-value"><b class="roll" data-roll="progressValue">0%</b><em data-bind="progressContext">—</em></div>
+            <div class="meter meter--volt"><i data-meter="progress"></i></div>
+          </article>
+        </section>
+
+        <section class="overs panel enter" style="--i:8">
+          <div class="over-group over-group--prev">
+            <div class="over-head"><small>PREVIOUS</small><b data-bind="prevOverLabel">—</b></div>
+            <div class="balls" data-balls="previous"></div>
+            <div class="over-total"><b data-bind="prevOverTotal">—</b><small>RUNS</small></div>
+          </div>
+          <div class="over-divider" aria-hidden="true"></div>
+          <div class="over-group over-group--curr">
+            <div class="over-head"><small>THIS OVER</small><b data-bind="currOverLabel">OVER 1</b></div>
+            <div class="balls" data-balls="current"></div>
+            <div class="over-total over-total--hot"><b data-bind="currOverTotal">0</b><small>RUNS</small></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ============ LOWER-THIRD BAR LAYOUT ============ -->
+      <section class="bar" aria-label="Lower third scorebar">
+        <div class="bar-tabs">
+          <div class="bar-tab bar-tab--left">
+            <span class="live-badge live-badge--sm" data-live-badge><i></i><b data-bind="liveLabel">LIVE</b></span>
+            <span data-bind="eventName">LIVE CRICKET</span>
+          </div>
+          <div class="bar-tab bar-tab--right"><span data-bind="barMessage">—</span></div>
+        </div>
+
+        <div class="bar-body">
+          <!-- live -->
+          <div class="bar-state bar-live">
+            <div class="bar-team">
+              <div class="bar-mark" data-mark="home"></div>
+              <div><b data-bind="homeCode">T1</b><small data-bind="homeRole">BATTING</small></div>
+            </div>
+            <div class="bar-score">
+              <strong class="roll" data-roll="score">0/0</strong>
+              <span><b class="roll" data-roll="overs">0.0</b><small>OV</small></span>
+            </div>
+            <div class="bar-player is-striker" data-card="striker">
+              <small><svg><use href="#i-bat"/></svg><span data-bind="b1Name">Batter</span></small>
+              <b><span class="roll" data-roll="b1Runs">—</span><em>(<span data-bind="b1Balls">—</span>)</em></b>
+            </div>
+            <div class="bar-player" data-card="nonStriker">
+              <small><span data-bind="b2Name">Batter</span></small>
+              <b><span class="roll" data-roll="b2Runs">—</span><em>(<span data-bind="b2Balls">—</span>)</em></b>
+            </div>
+            <div class="bar-player bar-player--bowl" data-card="bowler">
+              <small><svg><use href="#i-ball"/></svg><span data-bind="bwName">Bowler</span></small>
+              <b><span class="roll" data-roll="bwFigures">—</span><em>(<span data-bind="bwOvers">—</span>)</em></b>
+            </div>
+            <div class="bar-over">
+              <small data-bind="currOverLabel">OVER 1</small>
+              <div class="balls balls--sm" data-balls="current"></div>
+            </div>
+            <div class="bar-team bar-team--away">
+              <div><b data-bind="awayCode">T2</b><small data-bind="awayRole">BOWLING</small></div>
+              <div class="bar-mark" data-mark="away"></div>
+            </div>
+          </div>
+
+          <!-- pre -->
+          <div class="bar-state bar-pre">
+            <div class="bar-team"><div class="bar-mark" data-mark="home"></div><div><b data-bind="homeName">TEAM ONE</b><small>TEAM 1</small></div></div>
+            <strong class="bar-vs">VS</strong>
+            <div class="bar-team bar-team--away"><div><b data-bind="awayName">TEAM TWO</b><small>TEAM 2</small></div><div class="bar-mark" data-mark="away"></div></div>
+            <div class="bar-count"><small data-bind="countLabel">STARTS IN</small><b data-bind="countValue">SOON</b></div>
+            <div class="bar-when"><small data-bind="timeZone">LOCAL TIME</small><b data-bind="startTime">TBC</b></div>
+          </div>
+
+          <!-- end -->
+          <div class="bar-state bar-end">
+            <div class="bar-mark bar-mark--lg" data-mark="winner"></div>
+            <div class="bar-win">
+              <small data-bind="winnerEyebrow">MATCH WINNER</small>
+              <strong data-bind="winnerName">WINNER</strong>
+            </div>
+            <p class="bar-result" data-bind="resultText">Match complete</p>
+            <div class="bar-final"><small>FINAL</small><b class="roll" data-roll="finalScore">0/0</b><em>(<span data-bind="finalOvers">0.0</span>)</em></div>
+            <svg class="bar-trophy"><use href="#i-trophy"/></svg>
+          </div>
+        </div>
+        <div class="bar-progress"><i data-meter="progress"></i></div>
+      </section>
+
+      <!-- ============ EVENT TAKEOVER ============ -->
+      <div id="takeover" class="takeover" aria-hidden="true">
+        <div class="tk-stripes"><i></i><i></i><i></i></div>
+        <div class="tk-content">
+          <svg class="tk-icon"><use id="tkIconUse" href="#i-ball"/></svg>
+          <div class="tk-text">
+            <span class="tk-sub" id="tkSub">BOUNDARY</span>
+            <strong class="tk-word" id="tkWord">FOUR</strong>
+            <span class="tk-detail" id="tkDetail"></span>
+          </div>
+        </div>
+        <div class="tk-burst" id="tkBurst"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="team-presets.js"></script>
+  <script src="team-marks.js"></script>
+  <script src="overlay.js"></script>
+</body>
+</html>

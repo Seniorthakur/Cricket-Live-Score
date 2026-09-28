@@ -1,0 +1,94 @@
+{
+  "shubman gill": {
+    "id": "66818",
+    "profile": "https://www.icc-cricket.com/rankings/66818/shubman-gill"
+  },
+  "ruturaj gaikwad|india": {
+    "id": "66584",
+    "profile": "https://www.icc-cricket.com/rankings/66584/ruturaj-gaikwad",
+    "discovered": true,
+    "team": "India",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:29:33.786Z"
+  },
+  "virat kohli|india": {
+    "id": "3993",
+    "profile": "https://www.icc-cricket.com/rankings/3993/virat-kohli",
+    "discovered": true,
+    "team": "India",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:29:34.171Z"
+  },
+  "gudakesh motie|west indies": {
+    "id": "64262",
+    "profile": "https://www.icc-cricket.com/rankings/64262/gudakesh-motie",
+    "discovered": true,
+    "team": "West Indies",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:29:34.788Z"
+  },
+  "xavier bartlett|australia": {
+    "id": "66516",
+    "profile": "https://www.icc-cricket.com/rankings/66516/xavier-bartlett",
+    "discovered": true,
+    "team": "Australia",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:30:10.574Z"
+  },
+  "duan jansen|south africa": {
+    "id": "70815",
+    "profile": "https://www.icc-cricket.com/rankings/70815/duan-jansen",
+    "discovered": true,
+    "team": "South Africa",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:30:10.621Z"
+  },
+  "jack edwards|australia": {
+    "id": "79",
+    "profile": "https://www.icc-cricket.com/rankings/79/jack-edwards",
+    "discovered": true,
+    "team": "Australia",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-27T15:30:11.492Z"
+  },
+  "keacy carty|west indies": {
+    "id": "65282",
+    "profile": "https://www.icc-cricket.com/rankings/65282/keacy-carty",
+    "discovered": true,
+    "team": "West Indies",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-28T03:20:22.095Z"
+  },
+  "justin greaves|west indies": {
+    "id": "57643",
+    "profile": "https://www.icc-cricket.com/rankings/57643/justin-greaves",
+    "discovered": true,
+    "team": "West Indies",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-28T03:21:07.265Z"
+  },
+  "prasidh krishna|india": {
+    "id": "65702",
+    "profile": "https://www.icc-cricket.com/rankings/65702/prasidh-krishna",
+    "discovered": true,
+    "team": "India",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-28T03:21:07.448Z"
+  },
+  "john campbell|west indies": {
+    "id": "60160",
+    "profile": "https://www.icc-cricket.com/rankings/60160/john-campbell",
+    "discovered": true,
+    "team": "West Indies",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-28T03:21:07.590Z"
+  },
+  "jasprit bumrah|india": {
+    "id": "63755",
+    "profile": "https://www.icc-cricket.com/rankings/63755/jasprit-bumrah",
+    "discovered": true,
+    "team": "India",
+    "hasHeadshot": true,
+    "updatedAt": "2026-09-28T03:22:41.854Z"
+  }
+}
